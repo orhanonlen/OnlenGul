@@ -10,14 +10,15 @@ export default function LawDetailScreen({ route }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
 
   // Kanun metnini satırlara ayırıyoruz
-  const contentLines = useMemo(() => content.split('\n'), [content]);
+  const contentLines = useMemo(() => content?.split('\n') || [], [content]);
 
   // Arama sorgusuna göre filtreleme (arama alanı boşsa tüm satırları göster)
   const filteredLines = useMemo(() => {
-    if (!searchQuery) return contentLines;
+    if (!content) return ["İçerik yükleniyor..."];
+    if (!searchQuery) return content.split('\n');
     const query = searchQuery.toLowerCase();
-    return contentLines.filter(line => line.toLowerCase().includes(query));
-  }, [searchQuery, contentLines]);
+    return content.split('\n').filter(line => line.toLowerCase().includes(query));
+  }, [searchQuery, content]);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -30,9 +31,13 @@ export default function LawDetailScreen({ route }: Props) {
         onChangeText={setSearchQuery}
       />
       <View style={styles.contentWrapper}>
-        {filteredLines.map((line, index) => (
-          <Text key={index} style={styles.contentText}>{line}</Text>
-        ))}
+        {filteredLines.length > 0 ? (
+          filteredLines.map((line, index) => (
+            <Text key={index} style={styles.contentText}>{line}</Text>
+          ))
+        ) : (
+          <Text style={styles.noResultsText}>Aradığınız madde bulunamadı.</Text>
+        )}
       </View>
     </ScrollView>
   );
@@ -70,5 +75,11 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     color: '#000',
     marginBottom: 5,
+  },
+  noResultsText: {
+    fontSize: 16,
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 10,
   },
 });

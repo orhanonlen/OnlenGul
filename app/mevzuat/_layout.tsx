@@ -1,13 +1,14 @@
-// MevzuatLayout.tsx (veya .js)
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import MevzuatListScreen from './mevzuat';
-import LawDetailScreen from './lawDetail';
+import LawDetailScreen from './lawdetail';
+import AnayasaScreen from './anayasascreen'; // Modern anayasascreen.js dosyasını import ediyoruz
 
 export type MevzuatStackParamList = {
   MevzuatList: undefined;
   LawDetail: { lawId: string; title: string; content: string };
+  Anayasa: undefined; // Yeni route
 };
 
 const Stack = createStackNavigator<MevzuatStackParamList>();
@@ -42,6 +43,18 @@ export default function MevzuatLayout() {
         component={LawDetailScreen}
         options={({ route, navigation }) => ({
           title: route.params.title,
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Text style={styles.headerLeftText}>&lt; Geri</Text>
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="Anayasa"
+        component={AnayasaScreen}
+        options={({ navigation }) => ({
+          title: 'Anayasa',
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Text style={styles.headerLeftText}>&lt; Geri</Text>
